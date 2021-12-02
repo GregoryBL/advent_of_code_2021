@@ -13,12 +13,11 @@ defmodule Day2 do
 
   """
   def read_input_file do
-    file_contents = File.read!("input-2.txt")
-    lines = String.split(file_contents, "\n")
-    lines = List.delete_at(lines, 1000)
-    Enum.map(lines, fn l ->
-      [direction | tail] = String.split(l, " ")
-      [amount | _ ] = tail
+    File.read!("input-2.txt")
+    |> String.split("\n")
+    |> List.delete_at(1000)
+    |> Enum.map(fn l ->
+      [direction | [amount]] = String.split(l, " ")
       {direction, String.to_integer(amount)}
     end)
   end
@@ -26,9 +25,9 @@ defmodule Day2 do
   def execute_command(direction, current) do
     {current_x, current_y} = current
     case direction do
-      {"forward", n} -> put_elem(current, 0, current_x + n)
-      {"down", n} -> put_elem(current, 1, current_y + n)
-      {"up", n} -> put_elem(current, 1, current_y - n)
+      {"forward", n} -> {current_x + n, current_y}
+      {"down", n} -> {current_x, current_y + n}
+      {"up", n} -> {current_x, current_y - n}
     end
   end
 
@@ -41,5 +40,12 @@ defmodule Day2 do
     end
   end
 
+  def main do
+    dirs = read_input_file()
+    {x, y} = dirs |> Enum.reduce({0, 0}, &execute_command/2)
+    IO.puts(x * y)
+    {x2, y2, _} = dirs |> Enum.reduce({0, 0, 0}, &execute_command2/2)
+    IO.puts(x2 * y2)
+  end
 
 end
