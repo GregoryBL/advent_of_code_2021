@@ -17,13 +17,14 @@ defmodule Day2 do
     |> String.split("\n")
     |> List.delete_at(1000)
     |> Enum.map(fn l ->
-      [direction | [amount]] = String.split(l, " ")
+      [direction, amount] = String.split(l, " ")
       {direction, String.to_integer(amount)}
     end)
   end
 
   def execute_command(direction, current) do
     {current_x, current_y} = current
+
     case direction do
       {"forward", n} -> {current_x + n, current_y}
       {"down", n} -> {current_x, current_y + n}
@@ -33,8 +34,9 @@ defmodule Day2 do
 
   def execute_command2(direction, current) do
     {current_x, current_y, aim} = current
+
     case direction do
-      {"forward", n} -> {current_x + n, current_y + (n * aim), aim}
+      {"forward", n} -> {current_x + n, current_y + n * aim, aim}
       {"down", n} -> {current_x, current_y, aim + n}
       {"up", n} -> {current_x, current_y, aim - n}
     end
@@ -47,5 +49,4 @@ defmodule Day2 do
     {x2, y2, _} = dirs |> Enum.reduce({0, 0, 0}, &execute_command2/2)
     IO.puts(x2 * y2)
   end
-
 end
