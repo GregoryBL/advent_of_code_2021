@@ -32,7 +32,6 @@ defmodule Day3 do
     |> convert_bits_to_int
   end
 
-  # 1 if "most" 0 if "least"
   def get_extreme(codes, position, most_or_least) do
     mol =
       case most_or_least do
