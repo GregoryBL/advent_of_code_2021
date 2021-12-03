@@ -34,6 +34,12 @@ defmodule Day3 do
 
   # 1 if "most" 0 if "least"
   def get_extreme(codes, position, most_or_least) do
+    mol =
+      case most_or_least do
+        :most -> 1
+        :least -> 0
+      end
+
     freqs =
       codes
       |> Enum.zip()
@@ -42,13 +48,16 @@ defmodule Day3 do
     total_num = length(codes)
 
     case Enum.at(freqs, position) * 2 / total_num >= 1 do
-      true -> most_or_least
-      false -> 1 - most_or_least
+      true -> mol
+      false -> 1 - mol
     end
   end
 
   # Recursively filter to the most extreme until there's a single code
-  def find_code(codes, position, most_or_least) do
+  def find_code(codes, most_or_least), do: find_code(codes, most_or_least, 0)
+  def find_code(codes, _most_or_least, _position) when length(codes) == 1, do: codes
+
+  def find_code(codes, most_or_least, position) do
     most = get_extreme(codes, position, most_or_least)
 
     filtered =
@@ -56,18 +65,14 @@ defmodule Day3 do
         Enum.at(line, position) == most
       end)
 
-    if length(filtered) > 1 do
-      find_code(filtered, position + 1, most_or_least)
-    else
-      filtered
-    end
+    find_code(filtered, most_or_least, position + 1)
   end
 
   def part2(codes) do
-    [code] = find_code(codes, 0, 1)
+    [code] = find_code(codes, :most)
     oxy = convert_bin_list_to_int(code)
 
-    [code2] = find_code(codes, 0, 0)
+    [code2] = find_code(codes, :least)
     co2 = convert_bin_list_to_int(code2)
 
     oxy * co2
