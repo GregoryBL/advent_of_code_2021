@@ -14,8 +14,8 @@ defmodule Day2 do
   """
   def read_input_file do
     File.read!("input-2.txt")
+    |> String.trim()
     |> String.split("\n")
-    |> List.delete_at(1000)
     |> Enum.map(fn l ->
       [direction, amount] = String.split(l, " ")
       {direction, String.to_integer(amount)}
