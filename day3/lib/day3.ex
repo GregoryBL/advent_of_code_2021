@@ -5,44 +5,19 @@ defmodule Day3 do
     |> String.trim()
     |> String.split("\n")
     |> Enum.map(fn l ->
-      [_| arr ] = String.split(l, "")
-      Enum.drop(arr, -1) |> Enum.map(&String.to_integer/1)
-
+      l |> String.codepoints |> Enum.map(&String.to_integer/1)
     end)
   end
 
-  def part1(dirs) do
-    start_values = for _ <- 1..12, do: {0, 0}
-
-    freqs = dirs
+  def part1(codes) do
+    freqs = codes
     |> Enum.zip
-    |> Enum.map(&Tuple.to_list/1)
-    |> Enum.map(&Enum.sum/1)
+    |> Enum.map(&Tuple.sum/1)
 
-    <<first::12>> = freqs
-    |> Enum.map(fn s ->
-      if s > length(dirs) / 2 do
-        1
-      else
-        0
-      end
-    end)
-    |> Enum.into(<<>>, fn bit -> <<bit :: 1>> end)
+    first = Enum.map(freqs, fn s -> round(s / length(codes)) end)
+    second = Enum.map(first, fn s -> 1 - s end)
 
-    second = freqs
-    |> Enum.map(fn s ->
-      if s > length(dirs) / 2 do
-        0
-      else
-        1
-      end
-    end)
-    |> convert_bin_list_to_int
-
-    # IO.puts(first)
-    # IO.puts(second)
-    # IO.puts(first * second)
-
+    convert_bin_list_to_int(first) * convert_bin_list_to_int(second)
   end
 
   def convert_bits_to_int(bits) do
@@ -57,55 +32,49 @@ defmodule Day3 do
     |> convert_bits_to_int
   end
 
-  # Big is 1 if "most" 0 if "least"
-  def get_most_common(codes, position, big) do
+  # 1 if "most" 0 if "least"
+  def get_extreme(codes, position, most_or_least) do
     freqs = codes
     |> Enum.zip
-    |> Enum.map(&Tuple.to_list/1)
-    |> Enum.map(&Enum.sum/1)
+    |> Enum.map(&Tuple.sum/1)
 
     total_num = length(codes)
 
     case (Enum.at(freqs, position) * 2 / total_num) >= 1 do
-      true -> big
-      false -> (1 - big)
+      true -> most_or_least
+      false -> (1 - most_or_least)
     end
   end
 
-  def filter_by_most_common(codes, position, big) do
-    most = get_most_common(codes, position, big)
+  # Recursively filter to the most extreme until there's a single code
+  def find_code(codes, position, most_or_least) do
+    most = get_extreme(codes, position, most_or_least)
+
     filtered = Enum.filter(codes, fn line ->
       Enum.at(line, position) == most
     end)
 
     if length(filtered) > 1 do
-      filter_by_most_common(filtered, position + 1, big)
+      find_code(filtered, position + 1, most_or_least)
     else
       filtered
     end
   end
 
-  def part2(dirs) do
-    [code] = filter_by_most_common(dirs, 0, 1)
+  def part2(codes) do
+    [code] = find_code(codes, 0, 1)
     oxy = convert_bin_list_to_int(code)
 
-    [code2] = filter_by_most_common(dirs, 0, 0)
+    [code2] = find_code(codes, 0, 0)
     co2 = convert_bin_list_to_int(code2)
 
     oxy * co2
-
-
-    # d1 = get_most_common(dirs, 0)
-    # Enum.filter(dirs, fn line ->
-    #   Enum.at(line, 0) == d1
-    # end)
-    # get_most_common(lines, 1)
   end
 
   def main do
-    dirs = read_input_file()
-    IO.puts(part1(dirs))
-    IO.puts(part2(dirs))
+    codes = read_input_file()
+    IO.puts(part1(codes))
+    IO.puts(part2(codes))
   end
 
   def test do
