@@ -10,10 +10,12 @@ defmodule Day5 do
         String.split(p, ",")
         |> Enum.map(&String.to_integer/1)
       end)
+      |> Enum.map(&List.to_tuple/1)
     end)
+    |> Enum.map(&List.to_tuple/1)
   end
 
-  def is_horiz_vert?([[x1, y1], [x2, y2]]) do
+  def is_horiz_vert?({{x1, y1}, {x2, y2}}) do
     x1 == x2 || y1 == y2
   end
 
@@ -29,13 +31,13 @@ defmodule Day5 do
   def direction(a, b) when a > b, do: 1
   def direction(a, b) when a < b, do: -1
 
-  def make_points([[x1, y1], [x2, y2]]) do
+  def make_points({{x1, y1}, {x2, y2}}) do
     dx = direction(x2, x1)
     dy = direction(y2, y1)
 
     num_points = max(abs(x2 - x1), abs(y2 - y1))
 
-    0..num_points |> Enum.map(fn n -> [x1 + n * dx, y1 + n * dy] end)
+    0..num_points |> Enum.map(fn n -> {x1 + n * dx, y1 + n * dy} end)
   end
 
   def part1(lines) do
