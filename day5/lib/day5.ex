@@ -1,18 +1,21 @@
 defmodule Day5 do
   def read_input_file(name) do
-    # The parsing code is always gnarly but whatever
     File.read!(name)
     |> String.trim()
     |> String.split("\n", trim: true)
-    |> Enum.map(fn l ->
-      String.split(l, " -> ", trim: true)
-      |> Enum.map(fn p ->
-        String.split(p, ",")
-        |> Enum.map(&String.to_integer/1)
-      end)
-      |> Enum.map(&List.to_tuple/1)
-    end)
+    |> Enum.map(&parse_line/1)
     |> Enum.map(&List.to_tuple/1)
+  end
+
+  def parse_line(str) do
+    String.split(str, " -> ", trim: true)
+    |> Enum.map(&parse_point/1)
+    |> Enum.map(&List.to_tuple/1)
+  end
+
+  def parse_point(str) do
+    String.split(str, ",")
+    |> Enum.map(&String.to_integer/1)
   end
 
   def is_horiz_vert?({{x1, y1}, {x2, y2}}) do
