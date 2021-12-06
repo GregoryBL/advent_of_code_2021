@@ -22,11 +22,12 @@ defmodule Day6 do
     end)
   end
 
-  def advance_fish({day, freq}, full_days) do
-    case day do
-      0 -> %{(full_days - 1) => freq, (full_days + 1) => freq}
-      _ -> %{(day - 1) => freq}
-    end
+  def advance_fish({0, freq}, full_days) do
+    %{(full_days - 1) => freq, (full_days + 1) => freq}
+  end
+
+  def advance_fish({day, freq}, _full_days) do
+    %{(day - 1) => freq}
   end
 
   def total_fish(freqs) do
