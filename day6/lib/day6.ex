@@ -5,7 +5,6 @@ defmodule Day6 do
     |> String.split(",", trim: true)
     |> Enum.map(&String.to_integer/1)
     |> Enum.frequencies()
-    |> Map.to_list()
   end
 
   def advance_days(freqs, _full_days, num_days) when num_days == 0 do
@@ -13,34 +12,21 @@ defmodule Day6 do
   end
 
   def advance_days(freqs, full_days, num_days) do
-    advance_days(collapse_freqs(advance_fish_day(freqs, full_days)), full_days, num_days - 1)
+    advance_days(advance_day(freqs, full_days), full_days, num_days - 1)
   end
 
-  def advance_fish_day(freqs, full_days) do
-    Enum.flat_map(freqs, fn f -> advance_day(f, full_days) end)
-  end
-
-  def advance_day({day, freq}, full_days) do
-    case day do
-      0 -> [{full_days - 1, freq}, {full_days + 1, freq}]
-      _ -> [{day - 1, freq}]
-    end
-  end
-
-  def collapse_freqs(freqs) do
+  def advance_day(freqs, full_days) do
     Enum.reduce(freqs, %{}, fn {day, num}, acc ->
-      {_old, new_map} =
-        Map.get_and_update(acc, day, fn curr ->
-          if curr == nil do
-            {curr, num}
-          else
-            {curr, num + curr}
-          end
-        end)
-
-      new_map
+      new = advance_fish({day, num}, full_days)
+      Map.merge(new, acc, fn _k, a, b -> a + b end)
     end)
-    |> Map.to_list()
+  end
+
+  def advance_fish({day, freq}, full_days) do
+    case day do
+      0 -> %{(full_days - 1) => freq, (full_days + 1) => freq}
+      _ -> %{(day - 1) => freq}
+    end
   end
 
   def total_fish(freqs) do
