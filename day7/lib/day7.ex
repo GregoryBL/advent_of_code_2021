@@ -26,12 +26,7 @@ defmodule Day7 do
     # Probably should nil and handle it but lazy
     Enum.reduce(0..mx, 100_000_000_000_000, fn n, acc ->
       cost = find_fuel_cost(freqs, n)
-
-      if cost < acc do
-        cost
-      else
-        acc
-      end
+      min(cost, acc)
     end)
   end
 
