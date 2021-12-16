@@ -1,0 +1,4 @@
+%{
+  "pqueue": {:hex, :pqueue, "2.0.4", "fc01bea2f8a5d939867a8b673654e8fbf5be8b91abbca29bf6aa163c9d3ee8cc", [:rebar3], [], "hexpm", "0eaa17045e320984518986752917db5970c24776dc96df1f4ca809801a13bc8c"},
+  "priority_queue": {:hex, :priority_queue, "1.0.0", "5ff5f83a764b635e71f0e41bf78b9763bb233bbac8f5733b4b09b6730bddf866", [:mix], [], "hexpm", "ba3dc420a5898d863803455c05ad870c6b6f3adb12b50ebea6cd6aeed1b358b7"},
+}
